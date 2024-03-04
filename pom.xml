@@ -251,10 +251,6 @@
           <excludedGroups>${integration.tests}</excludedGroups>
           <excludedGroups>${excluded.spanner.tests}</excludedGroups>
           <trimStackTrace>false</trimStackTrace>
-          <systemPropertyVariables>
-            <!-- Allow this project to be tested with JDK 21 -->
-            <net.bytebuddy.experimental>true</net.bytebuddy.experimental>
-          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
