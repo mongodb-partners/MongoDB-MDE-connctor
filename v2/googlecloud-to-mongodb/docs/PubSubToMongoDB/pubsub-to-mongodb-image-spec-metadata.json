@@ -1,0 +1,42 @@
+{
+  "name": "Pubsub to MongoDb",
+  "image": "gcr.io/gcp-pov/pubsub-to-mongodb-latest",
+  "description": "A pipeline reads from BigQUery and writes to MongoDb.",
+  "metadata": {
+    "name": "PubSub To MongoDB",
+    "description": "A pipeline reads from Pubsub and writes to MongoDb.",
+    "parameters": [
+      {
+        "name": "mongoDBUri",
+        "label": "MongoDB Connection URI",
+        "helpText": "URI to connect to MongoDb Atlas",
+        "is_optional": true,
+        "paramType": "TEXT"
+      },
+      {
+        "name": "database",
+        "label": "mongodb database",
+        "helpText": "Database in MongoDB to store the collection. ex: my-db.",
+        "is_optional": true,
+        "paramType": "TEXT"
+      },
+      {
+        "name": "collection",
+        "label": "mongodb collection",
+        "helpText": "Name of the collection inside MongoDB database. ex: my-collection.",
+        "is_optional": true,
+        "paramType": "TEXT"
+      },
+      {
+        "name": "inputSubscription",
+        "label": "input table spec",
+        "helpText": "PubSub input table spec.",
+        "is_optional": true,
+        "paramType": "TEXT"
+      }
+    ]
+  },
+  "sdk_info": {
+    "language": "JAVA"
+  }
+}

@@ -84,7 +84,6 @@ public class PubSubToMongoDB {
                                 String jsonString = gson.toJson(c.element().getAttributeMap());
                                 jsonString = jsonString.replace("mde.", "mde_");
                                 Document parsedAttributes = doc.parse(jsonString);
-                                System.out.println(jsonString);
                                 parsedDoc.append("mde_type", parsedAttributes.get("mde_type"));
                                 System.out.println(parsedDoc.get("embeddedMetadata"));
                                 c.output(parsedDoc);
