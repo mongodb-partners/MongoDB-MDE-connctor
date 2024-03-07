@@ -85,7 +85,7 @@ public class PubSubToMongoDB {
                                 jsonString = jsonString.replace("mde.", "mde_");
                                 Document parsedAttributes = doc.parse(jsonString);
                                 parsedDoc.append("mde_type", parsedAttributes.get("mde_type"));
-                                System.out.println(parsedDoc.get("embeddedMetadata"));
+                                parsedDoc.append("mde_tag", parsedAttributes.get("mde_tag"));
                                 c.output(parsedDoc);
 
                             }

@@ -82,8 +82,6 @@ public class PubsubToMongoDB {
                   @ProcessElement
                   public void process(ProcessContext c) {
 
-                    // String payloadString = new String(pubSubMessage.getPayload(),
-                    // StandardCharsets.UTF_8);
                     String payloadString =
                         new String(c.element().getPayload(), StandardCharsets.UTF_8);
                     Document doc = new Document();
@@ -92,8 +90,8 @@ public class PubsubToMongoDB {
                     String jsonString = gson.toJson(c.element().getAttributeMap());
                     jsonString = jsonString.replace("mde.", "mde_");
                     Document parsedAttributes = doc.parse(jsonString);
-
-                    parsedDoc.append("attributes", parsedAttributes);
+                    parsedDoc.append("mde_type", parsedAttributes.get("mde_type"));
+                    parsedDoc.append("mde_tag", parsedAttributes.get("mde_tag"));
 
                     c.output(parsedDoc);
                   }
