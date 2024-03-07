@@ -66,7 +66,7 @@ public class PubSubToMongoDB {
                 pipeline.apply(
                         "Read PubSub Events",
                         PubsubIO.readMessagesWithAttributes()
-                                .fromSubscription("projects/mde-official-ce-demo/subscriptions/mongodb-writer-subscription-json"));
+                                .fromSubscription("replace with mde subscription"));
 
 
         messages.apply(
@@ -92,9 +92,9 @@ public class PubSubToMongoDB {
                         })).apply(
                 "Put to MongoDB",
                 MongoDbIO.write()
-                        .withUri("mongodb+srv://venkatesh:ashwin123@freetier.kxcgwh2.mongodb.net")
-                        .withDatabase("pbdb03")
-                        .withCollection("pbcol03")
+                        .withUri("replace with MongoDb URI")
+                        .withDatabase("database name")
+                        .withCollection("collection name")
                         .withIgnoreSSLCertificate(true));
         return pipeline.run();
 
