@@ -1,48 +1,22 @@
 
-Pub/Sub Topic to BigQuery template
+Pub/Sub Topic to MongoDB template
 ---
-The Pub/Sub Topic to BigQuery template is a streaming pipeline that reads
-JSON-formatted messages from a Pub/Sub topic and writes them to a BigQuery table.
-You can use the template as a quick solution to move Pub/Sub data to BigQuery.
+The Pub/Sub Topic to MongoDB template is a streaming pipeline that reads
+JSON-formatted messages from a Pub/Sub topic and writes them to a MongoDB collection.
+You can use the template as a quick solution to move Pub/Sub data to MongoDB.
 The template reads JSON-formatted messages from Pub/Sub and converts them to
-BigQuery elements.
+MongoDB elements.
 
-
-:memo: This is a Google-provided template! Please
-check [Provided templates documentation](https://cloud.google.com/dataflow/docs/guides/templates/provided/pubsub-to-bigquery)
-on how to use it without having to build from sources using [Create job from template](https://console.cloud.google.com/dataflow/createjob?template=PubSub_to_BigQuery).
-
-:bulb: This is a generated documentation based
-on [Metadata Annotations](https://github.com/GoogleCloudPlatform/DataflowTemplates#metadata-annotations)
-. Do not change this file directly.
 
 ## Parameters
 
+
 ### Required Parameters
 
-* **outputTableSpec** (BigQuery output table): BigQuery table location to write the output to. The table’s schema must match the input JSON objects.
-* **inputTopic** (Input Pub/Sub topic): The Pub/Sub topic to read the input from.
-
-### Optional Parameters
-
-* **outputDeadletterTable** (Table for messages failed to reach the output table (i.e., Deadletter table)): BigQuery table for failed messages. Messages failed to reach the output table for different reasons (e.g., mismatched schema, malformed json) are written to this table. If it doesn't exist, it will be created during pipeline execution. If not specified, "outputTableSpec_error_records" is used instead.
-* **javascriptTextTransformGcsPath** (JavaScript UDF path in Cloud Storage): The Cloud Storage path pattern for the JavaScript code containing your user-defined functions.
-* **javascriptTextTransformFunctionName** (JavaScript UDF name): The name of the function to call from your JavaScript file. Use only letters, digits, and underscores. (Example: transform_udf1).
-* **javascriptTextTransformReloadIntervalMinutes** (JavaScript UDF auto-reload interval (minutes)): Define the interval that workers may check for JavaScript UDF changes to reload the files. Defaults to: 0.
-
-
-## User-Defined functions (UDFs)
-
-The Pub/Sub Topic to BigQuery Template supports User-Defined functions (UDFs).
-UDFs allow you to customize functionality by providing a JavaScript function
-without having to maintain or build the entire template code.
-
-Check [Create user-defined functions for Dataflow templates](https://cloud.google.com/dataflow/docs/guides/templates/create-template-udf)
-and [Using UDFs](https://github.com/GoogleCloudPlatform/DataflowTemplates#using-udfs)
-for more information about how to create and test those functions.
-
-
-## Getting Started
+* **mongoDbUri** (MongoDB Connection URI): URI to connect to MongoDB Atlas.
+* **database** (MongoDB Database): Database in MongoDB to store the collection. (Example: my-db).
+* **collection** (MongoDB collection): Name of the collection inside MongoDB database. (Example: my-collection).
+* **subscription** (Pubsub subscription): Subsub source table spec. (Example: "projects/project-name/subscriptions/subscription-name).
 
 ### Requirements
 
@@ -55,7 +29,7 @@ for more information about how to create and test those functions.
 
 :star2: Those dependencies are pre-installed if you use Google Cloud Shell!
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2FDataflowTemplates.git&cloudshell_open_in_editor=v1/src/main/java/com/google/cloud/teleport/templates/PubSubToBigQuery.java)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2FDataflowTemplates.git&cloudshell_open_in_editor=v1/src/main/java/com/google/cloud/teleport/templates/PubSubToMongoDB.java)
 
 ### Templates Plugin
 
@@ -85,7 +59,7 @@ mvn clean package -PtemplatesStage  \
 -DprojectId="$PROJECT" \
 -DbucketName="$BUCKET_NAME" \
 -DstagePrefix="templates" \
--DtemplateName="PubSub_to_BigQuery" \
+-DtemplateName="PubSub_to_MongoDB" \
 -f v1
 ```
 
@@ -96,7 +70,7 @@ The command should build and save the template to Google Cloud, and then print
 the complete location on Cloud Storage:
 
 ```
-Classic Template was staged! gs://<bucket-name>/templates/PubSub_to_BigQuery
+Classic Template was staged! gs://<bucket-name>/templates/PubSub_to_MongoDB
 ```
 
 The specific path should be copied as it will be used in the following steps.
@@ -116,28 +90,21 @@ Provided that, the following command line can be used:
 export PROJECT=<my-project>
 export BUCKET_NAME=<bucket-name>
 export REGION=us-central1
-export TEMPLATE_SPEC_GCSPATH="gs://$BUCKET_NAME/templates/PubSub_to_BigQuery"
+export TEMPLATE_SPEC_GCSPATH="gs://$BUCKET_NAME/templates/PubSub_to_MongoDB"
 
-### Required
-export OUTPUT_TABLE_SPEC=<outputTableSpec>
-export INPUT_TOPIC=<inputTopic>
+export MONGO_DB_URI=<mongoDbUri>
+export DATABASE=<database>
+export COLLECTION=<collection>
+export SUBSCRIPTION=<subscription>
 
-### Optional
-export OUTPUT_DEADLETTER_TABLE=<outputDeadletterTable>
-export JAVASCRIPT_TEXT_TRANSFORM_GCS_PATH=<javascriptTextTransformGcsPath>
-export JAVASCRIPT_TEXT_TRANSFORM_FUNCTION_NAME=<javascriptTextTransformFunctionName>
-export JAVASCRIPT_TEXT_TRANSFORM_RELOAD_INTERVAL_MINUTES=0
-
-gcloud dataflow jobs run "pubsub-to-bigquery-job" \
+gcloud dataflow jobs run "pubsub-to-mongodb-job" \
   --project "$PROJECT" \
   --region "$REGION" \
-  --gcs-location "$TEMPLATE_SPEC_GCSPATH" \
-  --parameters "outputTableSpec=$OUTPUT_TABLE_SPEC" \
-  --parameters "inputTopic=$INPUT_TOPIC" \
-  --parameters "outputDeadletterTable=$OUTPUT_DEADLETTER_TABLE" \
-  --parameters "javascriptTextTransformGcsPath=$JAVASCRIPT_TEXT_TRANSFORM_GCS_PATH" \
-  --parameters "javascriptTextTransformFunctionName=$JAVASCRIPT_TEXT_TRANSFORM_FUNCTION_NAME" \
-  --parameters "javascriptTextTransformReloadIntervalMinutes=$JAVASCRIPT_TEXT_TRANSFORM_RELOAD_INTERVAL_MINUTES"
+  --template-file-gcs-location "$TEMPLATE_SPEC_GCSPATH" \
+  --parameters "mongoDbUri=$MONGO_DB_URI" \
+  --parameters "database=$DATABASE" \
+  --parameters "collection=$COLLECTION" \
+  --parameters "subscription=$SUBSCRIPTION"
 ```
 
 For more information about the command, please check:
@@ -155,60 +122,18 @@ export PROJECT=<my-project>
 export BUCKET_NAME=<bucket-name>
 export REGION=us-central1
 
-### Required
-export OUTPUT_TABLE_SPEC=<outputTableSpec>
-export INPUT_TOPIC=<inputTopic>
-
-### Optional
-export OUTPUT_DEADLETTER_TABLE=<outputDeadletterTable>
-export JAVASCRIPT_TEXT_TRANSFORM_GCS_PATH=<javascriptTextTransformGcsPath>
-export JAVASCRIPT_TEXT_TRANSFORM_FUNCTION_NAME=<javascriptTextTransformFunctionName>
-export JAVASCRIPT_TEXT_TRANSFORM_RELOAD_INTERVAL_MINUTES=0
+export MONGO_DB_URI=<mongoDbUri>
+export DATABASE=<database>
+export COLLECTION=<collection>
+export SUBSCRIPTION=<subscription>
 
 mvn clean package -PtemplatesRun \
 -DskipTests \
 -DprojectId="$PROJECT" \
 -DbucketName="$BUCKET_NAME" \
 -Dregion="$REGION" \
--DjobName="pubsub-to-bigquery-job" \
--DtemplateName="PubSub_to_BigQuery" \
--Dparameters="outputTableSpec=$OUTPUT_TABLE_SPEC,inputTopic=$INPUT_TOPIC,outputDeadletterTable=$OUTPUT_DEADLETTER_TABLE,javascriptTextTransformGcsPath=$JAVASCRIPT_TEXT_TRANSFORM_GCS_PATH,javascriptTextTransformFunctionName=$JAVASCRIPT_TEXT_TRANSFORM_FUNCTION_NAME,javascriptTextTransformReloadIntervalMinutes=$JAVASCRIPT_TEXT_TRANSFORM_RELOAD_INTERVAL_MINUTES" \
+-DjobName="pubsub-to-mongodb-job" \
+-DtemplateName="Pubsub_to_MongoDB" \
+-Dparameters="mongoDbUri=$MONGO_DB_URI,database=$DATABASE,collection=$COLLECTION,subscription=$SUBSCRIPTION" \
 -f v1
-```
-
-## Terraform
-
-Dataflow supports the utilization of Terraform to manage template jobs,
-see [dataflow_job](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataflow_job).
-
-Here is an example of Terraform configuration:
-
-
-```terraform
-provider "google-beta" {
-  project = var.project
-}
-variable "project" {
-  default = "<my-project>"
-}
-variable "region" {
-  default = "us-central1"
-}
-
-resource "google_dataflow_job" "pubsub_to_bigquery" {
-
-  provider          = google-beta
-  template_gcs_path = "gs://dataflow-templates-${var.region}/latest/PubSub_to_BigQuery"
-  name              = "pubsub-to-bigquery"
-  region            = var.region
-  temp_gcs_location = "gs://bucket-name-here/temp"
-  parameters        = {
-    outputTableSpec = "<outputTableSpec>"
-    inputTopic = "<inputTopic>"
-    # outputDeadletterTable = "<outputDeadletterTable>"
-    # javascriptTextTransformGcsPath = "<javascriptTextTransformGcsPath>"
-    # javascriptTextTransformFunctionName = "transform_udf1"
-    # javascriptTextTransformReloadIntervalMinutes = "0"
-  }
-}
 ```

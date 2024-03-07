@@ -1,14 +1,8 @@
 
-BigQuery to MongoDB template
+Pubsub to MongoDB template
 ---
-The BigQuery to MongoDB template is a batch pipeline that reads rows from a
-BigQuery and writes them to MongoDB as documents. Currently each row is stored as
-a document.
-
-
-:memo: This is a Google-provided template! Please
-check [Provided templates documentation](https://cloud.google.com/dataflow/docs/guides/templates/provided/bigquery-to-mongodb)
-on how to use it without having to build from sources using [Create job from template](https://console.cloud.google.com/dataflow/createjob?template=BigQuery_to_MongoDB).
+The Pubsub to MongoDB template is a Streaming pipeline that reads rows from a
+Pubsub and writes data to MongoDB as documents.
 
 :bulb: This is a generated documentation based
 on [Metadata Annotations](https://github.com/GoogleCloudPlatform/DataflowTemplates#metadata-annotations)
@@ -21,7 +15,7 @@ on [Metadata Annotations](https://github.com/GoogleCloudPlatform/DataflowTemplat
 * **mongoDbUri** (MongoDB Connection URI): URI to connect to MongoDB Atlas.
 * **database** (MongoDB Database): Database in MongoDB to store the collection. (Example: my-db).
 * **collection** (MongoDB collection): Name of the collection inside MongoDB database. (Example: my-collection).
-* **inputTableSpec** (BigQuery source table): BigQuery source table spec. (Example: bigquery-project:dataset.input_table).
+* **subscription** (Pubsub subscription): Subsub source table spec. (Example: "projects/project-name/subscriptions/subscription-name).
 
 ### Optional Parameters
 
@@ -41,7 +35,7 @@ on [Metadata Annotations](https://github.com/GoogleCloudPlatform/DataflowTemplat
 
 :star2: Those dependencies are pre-installed if you use Google Cloud Shell!
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2FDataflowTemplates.git&cloudshell_open_in_editor=v2/googlecloud-to-mongodb/src/main/java/com/google/cloud/teleport/v2/mongodb/templates/BigQueryToMongoDb.java)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2FDataflowTemplates.git&cloudshell_open_in_editor=v2/googlecloud-to-mongodb/src/main/java/com/google/cloud/teleport/v2/mongodb/templates/PubsubToMongoDB.java)
 
 ### Templates Plugin
 
@@ -71,7 +65,7 @@ mvn clean package -PtemplatesStage  \
 -DprojectId="$PROJECT" \
 -DbucketName="$BUCKET_NAME" \
 -DstagePrefix="templates" \
--DtemplateName="BigQuery_to_MongoDB" \
+-DtemplateName="Pubsub_to_MongoDB" \
 -f v2/googlecloud-to-mongodb
 ```
 
@@ -80,7 +74,7 @@ The command should build and save the template to Google Cloud, and then print
 the complete location on Cloud Storage:
 
 ```
-Flex Template was staged! gs://<bucket-name>/templates/flex/BigQuery_to_MongoDB
+Flex Template was staged! gs://<bucket-name>/templates/flex/Pubsub_to_MongoDB
 ```
 
 The specific path should be copied as it will be used in the following steps.
@@ -100,24 +94,24 @@ Provided that, the following command line can be used:
 export PROJECT=<my-project>
 export BUCKET_NAME=<bucket-name>
 export REGION=us-central1
-export TEMPLATE_SPEC_GCSPATH="gs://$BUCKET_NAME/templates/flex/BigQuery_to_MongoDB"
+export TEMPLATE_SPEC_GCSPATH="gs://$BUCKET_NAME/templates/flex/Pubsub_to_MongoDB"
 
 ### Required
 export MONGO_DB_URI=<mongoDbUri>
 export DATABASE=<database>
 export COLLECTION=<collection>
-export INPUT_TABLE_SPEC=<inputTableSpec>
+export SUBSCRIPTION=<subscription>
 
 ### Optional
 
-gcloud dataflow flex-template run "bigquery-to-mongodb-job" \
+gcloud dataflow flex-template run "pubsub-to-mongodb-job" \
   --project "$PROJECT" \
   --region "$REGION" \
   --template-file-gcs-location "$TEMPLATE_SPEC_GCSPATH" \
   --parameters "mongoDbUri=$MONGO_DB_URI" \
   --parameters "database=$DATABASE" \
   --parameters "collection=$COLLECTION" \
-  --parameters "inputTableSpec=$INPUT_TABLE_SPEC"
+  --parameters "subscription=$SUBSCRIPTION"
 ```
 
 For more information about the command, please check:
@@ -143,47 +137,13 @@ export INPUT_TABLE_SPEC=<inputTableSpec>
 
 ### Optional
 
-mvn clean package -PtemplatesRun \
+mvn clean install -PtemplatesRun \
 -DskipTests \
 -DprojectId="$PROJECT" \
 -DbucketName="$BUCKET_NAME" \
 -Dregion="$REGION" \
--DjobName="bigquery-to-mongodb-job" \
--DtemplateName="BigQuery_to_MongoDB" \
--Dparameters="mongoDbUri=$MONGO_DB_URI,database=$DATABASE,collection=$COLLECTION,inputTableSpec=$INPUT_TABLE_SPEC" \
+-DjobName="pubsub-to-mongodb-job" \
+-DtemplateName="Pubsub_to_MongoDB" \
+-Dparameters="mongoDbUri=$MONGO_DB_URI,database=$DATABASE,collection=$COLLECTION,subscription=$SUBSCRIPTION" \
 -f v2/googlecloud-to-mongodb
-```
-
-## Terraform
-
-Dataflow supports the utilization of Terraform to manage template jobs,
-see [dataflow_flex_template_job](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataflow_flex_template_job).
-
-Here is an example of Terraform configuration:
-
-
-```terraform
-provider "google-beta" {
-  project = var.project
-}
-variable "project" {
-  default = "<my-project>"
-}
-variable "region" {
-  default = "us-central1"
-}
-
-resource "google_dataflow_flex_template_job" "bigquery_to_mongodb" {
-
-  provider          = google-beta
-  container_spec_gcs_path = "gs://dataflow-templates-${var.region}/latest/flex/BigQuery_to_MongoDB"
-  name              = "bigquery-to-mongodb"
-  region            = var.region
-  parameters        = {
-    mongoDbUri = "<mongoDbUri>"
-    database = "my-db"
-    collection = "my-collection"
-    inputTableSpec = "bigquery-project:dataset.input_table"
-  }
-}
 ```

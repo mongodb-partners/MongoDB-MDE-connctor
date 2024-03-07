@@ -4,7 +4,7 @@ is the top-level module containing a batch
 of templates enabling data integration between Google Cloud products and MongoDB.
 
 ## Templates
-* [BigQueryToMongoDb](docs/BigQueryToMongoDb/README.md)
+* [PubsubToMongoDB](docs/PubsubToMongoDB/README.md)
 
 ## Guides
 * [Troubleshooting Guide](../mongodb-to-googlecloud/docs/troubleshooting.md)

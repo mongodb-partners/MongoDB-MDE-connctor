@@ -1,7 +1,7 @@
 {
   "name": "Pubsub to MongoDb",
   "image": "gcr.io/gcp-pov/pubsub-to-mongodb-latest",
-  "description": "A pipeline reads from BigQUery and writes to MongoDb.",
+  "description": "A pipeline reads from PubSub and writes to MongoDb.",
   "metadata": {
     "name": "PubSub To MongoDB",
     "description": "A pipeline reads from Pubsub and writes to MongoDb.",

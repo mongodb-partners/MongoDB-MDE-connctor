@@ -1,17 +1,5 @@
 /*
- * Copyright (C) 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Copyright mongoDB
  */
 package com.google.cloud.teleport.v2.mongodb.templates;
 
@@ -34,7 +22,8 @@ import org.apache.beam.sdk.values.PCollection;
 import org.bson.Document;
 
 /**
- * The {@link PubsubToMongoDB} pipeline is a batch pipeline which ingests data from MongoDB and
+ * The {@link PubsubToMongoDB} pipeline is a STREAMING pipeline which reads data from PubSub and
+ * ingests to MongoDB.
  *
  * <p>Check out <a
  * href="https://github.com/GoogleCloudPlatform/DataflowTemplates/blob/main/v2/mongodb-to-googlecloud/PubsubToMongoDB.md">README</a>
@@ -42,13 +31,13 @@ import org.bson.Document;
  */
 @Template(
     name = "Pubsub_to_MongoDB",
-    category = TemplateCategory.BATCH,
+    category = TemplateCategory.STREAMING,
     displayName = "PubSub to MongoDB",
     description = "",
     optionsClass = Options.class,
     flexContainerName = "pubsub-to-mongodb",
     documentation =
-        "https://cloud.google.com/dataflow/docs/guides/templates/provided/mongodb-to-bigquery",
+        "https://cloud.google.com/dataflow/docs/guides/templates/provided/pubsub-to-mongodb",
     contactInformation = "https://cloud.google.com/support",
     preview = true,
     requirements = {
